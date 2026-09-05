@@ -17,6 +17,7 @@
   <img src="frontend/screenshots/Screenshot%202026-09-05%20171041.png" width="24%" alt="Fresher.AI dashboard" />
   <img src="frontend/screenshots/Screenshot%202026-09-05%20171134.png" width="24%" alt="Resume builder" />
   <img src="frontend/screenshots/Screenshot%202026-09-05%20171205.png" width="24%" alt="Roadmap generator" />
+  <img src="frontend/screenshots/Screenshot%202026-09-05%20173423.png" width="24%" alt="Fresher.AI application" />
 </p>
 
 ## What It Does
