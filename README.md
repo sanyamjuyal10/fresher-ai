@@ -13,9 +13,10 @@
 ## Product Preview
 
 <p align="center">
-  <img src="docs/screenshots/resume-scorer.png" width="31%" alt="Resume scorer" />
-  <img src="docs/screenshots/dashboard.png" width="31%" alt="Fresher.AI dashboard" />
-  <img src="docs/screenshots/roadmap.png" width="31%" alt="Roadmap generator" />
+  <img src="frontend/screenshots/Screenshot%202026-09-05%20171005.png" width="24%" alt="Resume scorer" />
+  <img src="frontend/screenshots/Screenshot%202026-09-05%20171041.png" width="24%" alt="Fresher.AI dashboard" />
+  <img src="frontend/screenshots/Screenshot%202026-09-05%20171134.png" width="24%" alt="Resume builder" />
+  <img src="frontend/screenshots/Screenshot%202026-09-05%20171205.png" width="24%" alt="Roadmap generator" />
 </p>
 
 ## What It Does
@@ -56,41 +57,73 @@ Express API gateway :8000
 
 ## Run Locally
 
+### Prerequisites
+
+- Node.js 20 or newer
+- npm
+- Docker Desktop
+- A MongoDB Atlas cluster and database user
+- Firebase project credentials
+- Groq and Razorpay API credentials
+
+### Project Structure
+
+```text
+fresher-ai/
+├── frontend/                 # React + Vite application
+├── backend/
+│   ├── gateway/               # API gateway on :8000
+│   ├── services/
+│   │   ├── auth-service/      # Auth and sessions on :8001
+│   │   ├── interview-service/ # Interviews on :8002
+│   │   ├── resume-service/    # Resume analysis on :8003
+│   │   ├── roadmap-service/   # Roadmaps on :8004
+│   │   └── billing-service/   # Payments on :8005
+│   └── shared/redis/          # Shared Redis client
+└── README.md
+```
+
 ### 1. Install dependencies
 
+Install each package once from the repository root:
+
 ```powershell
-cd frontend
-npm install
+cd C:\Users\<your-user>\Desktop\fresherAI
 
-cd ..\backend\gateway
-npm install
-
-cd ..\services\auth-service
-npm install
-
-cd ..\billing-service
-npm install
-
-cd ..\interview-service
-npm install
-
-cd ..\resume-service
-npm install
-
-cd ..\roadmap-service
-npm install
+npm --prefix frontend install
+npm --prefix backend\gateway install
+npm --prefix backend\services\auth-service install
+npm --prefix backend\services\billing-service install
+npm --prefix backend\services\interview-service install
+npm --prefix backend\services\resume-service install
+npm --prefix backend\services\roadmap-service install
 ```
 
 ### 2. Start Redis
 
 ```powershell
 cd backend
- docker compose up -d redis
+docker compose up -d redis
+docker compose ps
 ```
+
+Redis must be available at `localhost:6379`.
 
 ### 3. Configure environment files
 
-Create the ignored `.env` files from the values used by your local services. Never commit API keys, database passwords, Firebase service accounts, or `.env` files.
+Create these ignored files locally. Never commit API keys, database passwords, Firebase service accounts, or `.env` files.
+
+Each backend service needs its own `.env` file:
+
+```text
+backend/services/auth-service/.env
+backend/services/billing-service/.env
+backend/services/interview-service/.env
+backend/services/resume-service/.env
+backend/services/roadmap-service/.env
+backend/gateway/.env
+frontend/.env
+```
 
 Required backend configuration includes:
 
@@ -99,6 +132,23 @@ PORT=8001
 MONGODB_URL=mongodb://...
 REDIS_URL=redis://localhost:6379
 GROQ_API_KEY=...
+```
+
+For interview, resume, and roadmap services, optionally set the Groq fallback order:
+
+```env
+GROQ_MODELS=llama-3.1-8b-instant,openai/gpt-oss-20b,qwen/qwen3-32b
+```
+
+The gateway `.env` must point to the local services:
+
+```env
+PORT=8000
+AUTH_SERVICE_URL=http://localhost:8001
+INTERVIEW_SERVICE_URL=http://localhost:8002
+RESUME_SERVICE_URL=http://localhost:8003
+ROADMAP_SERVICE_URL=http://localhost:8004
+BILLING_SERVICE_URL=http://localhost:8005
 ```
 
 The frontend requires:
@@ -110,47 +160,73 @@ VITE_RAZORPAY_KEY_ID=...
 
 Add the machine's current public IP to the MongoDB Atlas Network Access list before starting the services.
 
-### 4. Start services
+### 4. Start the backend
 
-Run each command in a separate terminal:
+Run each command in a separate terminal. Start Redis first, then the services, then the gateway.
+
+```powershell
+# Auth service
+cd C:\Users\<your-user>\Desktop\fresherAI\backend\services\auth-service
+npm run dev
+```
+
+```powershell
+# Interview service
+cd C:\Users\<your-user>\Desktop\fresherAI\backend\services\interview-service
+npm run dev
+```
+
+```powershell
+# Resume service
+cd C:\Users\<your-user>\Desktop\fresherAI\backend\services\resume-service
+npm run dev
+```
+
+```powershell
+# Roadmap service
+cd C:\Users\<your-user>\Desktop\fresherAI\backend\services\roadmap-service
+npm run dev
+```
+
+```powershell
+# Billing service
+cd C:\Users\<your-user>\Desktop\fresherAI\backend\services\billing-service
+npm run dev
+```
 
 ```powershell
 # Gateway
-cd backend\gateway
+cd C:\Users\<your-user>\Desktop\fresherAI\backend\gateway
 npm start
 ```
 
-```powershell
-# Auth
-cd backend\services\auth-service
-npm run dev
-```
+### 5. Start the frontend
 
 ```powershell
-# Interview
-cd backend\services\interview-service
-npm run dev
-```
-
-```powershell
-# Resume
-cd backend\services\resume-service
-npm run dev
-```
-
-```powershell
-# Roadmap
-cd backend\services\roadmap-service
-npm run dev
-```
-
-```powershell
-# Frontend
-cd frontend
+cd C:\Users\<your-user>\Desktop\fresherAI\frontend
 npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173).
+
+### 6. Verify the process
+
+Check the gateway:
+
+```powershell
+Invoke-WebRequest http://localhost:8000 -UseBasicParsing
+```
+
+Expected startup messages include:
+
+```text
+Connected to MongoDB
+Auth Service Running
+Gateway Started on 8000
+Roadmap Service Started on 8004
+```
+
+If a service exits with a MongoDB selection error, add the current public IP to Atlas and wait until the access-list entry is **Active**. If a service exits with `ENOSPC`, clear disk space and the npm cache before reinstalling dependencies.
 
 ## Service Map
 
