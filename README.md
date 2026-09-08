@@ -13,8 +13,8 @@
 ## Product Preview
 
 <p align="center">
-  <img src="frontend/screenshots/Screenshot%202026-09-05%20171005.png" width="24%" alt="Resume scorer" />
-  <img src="frontend/screenshots/Screenshot%202026-09-05%20171041.png" width="24%" alt="Fresher.AI dashboard" />
+  <img src="frontend/screenshots/Resume-Analysis.png" width="24%" alt="Resume scorer" />
+  <img src="frontend/screenshots/Dashboard.png" width="24%" alt="Fresher.AI dashboard" />
   <img src="frontend/screenshots/Screenshot%202026-09-05%20171134.png" width="24%" alt="Resume builder" />
   <img src="frontend/screenshots/Screenshot%202026-09-05%20171205.png" width="24%" alt="Roadmap generator" />
   <img src="frontend/screenshots/Screenshot%202026-09-05%20173423.png" width="24%" alt="Fresher.AI application" />
